@@ -1,26 +1,32 @@
-import { useState } from 'react'
+import Navbar from './components/Navbar'
+import Hero from './components/Hero'
+import Features from './components/Features'
+import CTA from './components/CTA'
+import { useEffect, useState } from 'react'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [motivation, setMotivation] = useState(null)
+  useEffect(() => {
+    const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'
+    fetch(`${baseUrl}/api/motivation`).then(r => r.json()).then(setMotivation).catch(() => {})
+  }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
+    <div className="min-h-screen bg-black text-white">
+      <Navbar />
+      <Hero />
+      <Features />
+      <section className="bg-black py-16">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <p className="text-white/80">{motivation ? `“${motivation.text}” — ${motivation.author || 'MentorAI'}` : 'Caricamento frase motivazionale...'}</p>
+          </div>
         </div>
-      </div>
+      </section>
+      <CTA />
+      <footer className="bg-black/90 border-t border-white/10 py-10 text-center text-white/60 text-sm">
+        © {new Date().getFullYear()} MentorAI. Tutti i diritti riservati.
+      </footer>
     </div>
   )
 }
